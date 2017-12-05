@@ -13,9 +13,9 @@ void fctserveur (int sockdescr){
 	// Fonction qui lit dans la socket une chaine de caractères (en fait un
 	// bloc d'octets) et l'affiche à l'écran comme une chaine de caractères
 	// ...
-	char s[32];
-	sprintf(s, "%i", sockdescr);
-	printf("%s\n", s);
+	int i;
+	read(sockdescr, &i, sizeof(&i));
+    printf("Recu %i\n",i);
 }
 
 
@@ -34,9 +34,9 @@ int main(int argc, char **argv){
 	int nb = 10;
 
 	//numéro de port choisi ou 3 par défaut
-	int port = 3;
+	int port = 4200;
 	if(argv[1] == NULL){
-		printf("Port non précisé, il aura pour valeur 3\n");
+		printf("Port non précisé, il aura pour valeur 4200\n");
 	}
 	else { port = atoi(argv[1]); }
 
@@ -60,19 +60,26 @@ int main(int argc, char **argv){
 	if(sock_ecoute == -1){printf("Erreur à la création de la socket (serveur.c:main)\n");}
 
 
-	if (bind(sock_ecoute, (struct sockaddr *) &serveur_ad, sizeof(serveur_ad)) == -1) {
-		printf("Erreur à la création du bind (serveur.c:main) \n");}
+	if (bind(sock_ecoute, (struct sockaddr *)&serveur_ad, sizeof(serveur_ad)) == -1) {
+		printf("Erreur à la création du bind (serveur.c:main) \n");
+		//printf("(struct sockaddr *) &serveur_ad = %i \n", (struct sockaddr *) &serveur_ad);
+		printf("sock_ecoute = %i \n", sock_ecoute);
+		printf("sizeof(serveur_ad) = %lu \n", sizeof(serveur_ad));
+	}
 
 	if (listen(sock_ecoute, nb) == -1) {printf("Erreur à l'ouverture du service (serveur.c:main:listen)\n");}
 
+
 	while(1) {
-		
+		printf("En attente de requète client\n");	
 		//création client par accept()
 		int size_struct = sizeof(client_ad);
 		int sock_client = accept(sock_ecoute, (struct sockaddr*) &client_ad, &size_struct);
 
+
 		switch(fork()){
 			case 0 :
+				printf("Service de client\n");
 				// service du client puis fermeture de son socket
 				fctserveur(sock_client);
 				close(sock_client);
