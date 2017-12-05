@@ -13,9 +13,11 @@ void fctserveur (int sockdescr){
 	// Fonction qui lit dans la socket une chaine de caractères (en fait un
 	// bloc d'octets) et l'affiche à l'écran comme une chaine de caractères
 	// ...
-	int i;
-	read(sockdescr, &i, sizeof(&i));
-    printf("Recu %i\n",i);
+	char s[256];
+	printf("Nombre d'octet lu = %li\n", read(sockdescr, s, sizeof(s)));
+	printf("sockdescr =  %i\n", sockdescr);
+	printf("Size =  %lu\n", sizeof(s));
+    printf("Recu %s\n", s);
 }
 
 
@@ -75,7 +77,7 @@ int main(int argc, char **argv){
 		//création client par accept()
 		int size_struct = sizeof(client_ad);
 		int sock_client = accept(sock_ecoute, (struct sockaddr*) &client_ad, &size_struct);
-
+		if (sock_client == -1){printf("Requète non accéptée (serveur.c:main)");}
 
 		switch(fork()){
 			case 0 :

@@ -16,9 +16,11 @@
 void fctclient (int sockdescr){
 // Fonction qui saisit une chaine de caractères au clavier et l'envoie
 // dans la socket
-	char i = 42;
-	write(sockdescr, &i, sizeof(i));
-	printf("Envoyé %i\n",i);
+	char s[] = "coucou les poulet ca va ou bien?!";
+	printf("Nombre d'octets envoyé = %li\n", write(sockdescr, s, sizeof(s)));
+	printf("sockdescr =  %i\n", sockdescr);
+	printf("Size =  %lu\n", sizeof(s));
+	printf("Envoyé %s\n", s);
 
 }
 
